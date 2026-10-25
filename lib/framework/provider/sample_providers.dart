@@ -1,3 +1,4 @@
+import 'package:field_sample_log/framework/model/sample_enums.dart';
 import 'package:field_sample_log/framework/model/sample_model.dart';
 import 'package:field_sample_log/framework/repository/sample_repository.dart';
 import 'package:field_sample_log/ui/utils/app_constants/app_constants.dart';
@@ -33,11 +34,29 @@ class SampleListNotifier extends Notifier<AsyncValue<List<SampleModel>>> {
   }
 
   // Fetches all samples from the local database and updates the state.
+  // As a critical startup step, it also detects any samples that were stuck in the "uploading"
+  // state (if the app was killed mid-upload) and automatically recovers them back to "pending".
   Future<void> loadSamples() async {
     state = const AsyncValue.loading();
     try {
       final samples = await _repository.getAllSamples();
-      state = AsyncValue.data(samples);
+      
+      // Look for any samples stuck in 'uploading' due to a previous app kill/crash.
+      final stuckUploads = samples.where((s) => s.status == SampleStatus.uploading).toList();
+      
+      if (stuckUploads.isNotEmpty) {
+        // Recover them back to pending so they can be tried again.
+        for (final stuck in stuckUploads) {
+          final recovered = stuck.copyWith(status: SampleStatus.pending);
+          await _repository.updateSample(recovered);
+        }
+        
+        // Re-fetch the clean list to ensure our memory state perfectly matches the database
+        final recoveredSamples = await _repository.getAllSamples();
+        state = AsyncValue.data(recoveredSamples);
+      } else {
+        state = AsyncValue.data(samples);
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
