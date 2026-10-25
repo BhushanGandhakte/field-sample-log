@@ -177,7 +177,7 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
 
                 // Sample Type
                 DropdownButtonFormField<SampleType>(
-                  value: formState.sampleType,
+                  initialValue: formState.sampleType,
                   decoration: const InputDecoration(
                     labelText: 'Sample Type *',
                   ),
