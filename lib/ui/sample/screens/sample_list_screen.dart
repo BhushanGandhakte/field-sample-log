@@ -49,7 +49,7 @@ class SampleListScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: AppSpacing.medium),
-                
+
                 // Horizontally Scrollable Filter Chips
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -60,20 +60,26 @@ class SampleListScreen extends ConsumerWidget {
                         selected: currentStatusFilter == null,
                         onSelected: (selected) {
                           if (selected) {
-                            ref.read(statusFilterProvider.notifier).updateStatus(null);
+                            ref
+                                .read(statusFilterProvider.notifier)
+                                .updateStatus(null);
                           }
                         },
                       ),
                       const SizedBox(width: AppSpacing.small),
                       ...SampleStatus.values.map(
                         (status) => Padding(
-                          padding: const EdgeInsets.only(right: AppSpacing.small),
+                          padding: const EdgeInsets.only(
+                            right: AppSpacing.small,
+                          ),
                           child: ChoiceChip(
                             label: CommonText(data: status.name.toUpperCase()),
                             selected: currentStatusFilter == status,
                             onSelected: (selected) {
                               // If they tap the active one, it clears the filter back to 'All'
-                              ref.read(statusFilterProvider.notifier).updateStatus(selected ? status : null);
+                              ref
+                                  .read(statusFilterProvider.notifier)
+                                  .updateStatus(selected ? status : null);
                             },
                           ),
                         ),
