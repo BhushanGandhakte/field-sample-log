@@ -1,15 +1,170 @@
+import 'package:field_sample_log/framework/model/sample_enums.dart';
+import 'package:field_sample_log/framework/provider/sample_list_filter_provider.dart';
+import 'package:field_sample_log/framework/provider/sample_providers.dart';
+import 'package:field_sample_log/ui/sample/screens/sample_form_screen.dart';
+import 'package:field_sample_log/ui/sample/widgets/sample_card.dart';
+import 'package:field_sample_log/ui/utils/app_constants/app_constants.dart';
+import 'package:field_sample_log/ui/utils/theme/app_spacing.dart';
+import 'package:field_sample_log/ui/utils/widgets/common_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SampleListScreen extends StatefulWidget {
+class SampleListScreen extends ConsumerWidget {
   const SampleListScreen({super.key});
 
   @override
-  State<SampleListScreen> createState() => _SampleListScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // We watch the filtered list instead of the raw list
+    final filteredSamplesAsyncValue = ref.watch(filteredSamplesProvider);
+    
+    // We also need the raw list to know the pending count and if the database is truly empty
+    final allSamplesAsyncValue = ref.watch(sampleListProvider);
+    
+    final currentStatusFilter = ref.watch(statusFilterProvider);
 
-class _SampleListScreenState extends State<SampleListScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const CommonText(data: AppConstants.appTitle),
+      ),
+      body: Column(
+        children: [
+          // Search and Filter Bar
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.medium),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: 'Search site name...',
+                      prefixIcon: Icon(Icons.search),
+                      isDense: true,
+                    ),
+                    onChanged: (value) {
+                      // Update state via Riverpod
+                      ref.read(searchQueryProvider.notifier).updateQuery(value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.small),
+                DropdownButton<SampleStatus?>(
+                  value: currentStatusFilter,
+                  hint: const Text('All Status'),
+                  items: [
+                    const DropdownMenuItem(
+                      value: null,
+                      child: Text('All'),
+                    ),
+                    ...SampleStatus.values.map(
+                      (status) => DropdownMenuItem(
+                        value: status,
+                        child: Text(status.name.toUpperCase()),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    // Update state via Riverpod
+                    ref.read(statusFilterProvider.notifier).updateStatus(value);
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          // Main List Area
+          Expanded(
+            child: filteredSamplesAsyncValue.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Text('Error: $error'),
+              ),
+              data: (filteredSamples) {
+                // If there are no samples at all in the database, show the empty state
+                final allSamples = allSamplesAsyncValue.value ?? [];
+                if (allSamples.isEmpty) {
+                  return _buildEmptyState(context);
+                }
+
+                // If samples exist but the filter excluded all of them
+                if (filteredSamples.isEmpty) {
+                  return const Center(
+                    child: Text('No samples match your filters.'),
+                  );
+                }
+
+                final pendingCount = allSamples
+                    .where((s) => s.status == SampleStatus.pending)
+                    .length;
+
+                return RefreshIndicator(
+                  onRefresh: () =>
+                      ref.read(sampleListProvider.notifier).loadSamples(),
+                  child: Column(
+                    children: [
+                      if (pendingCount > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.small),
+                          child: Text(
+                            '$pendingCount sample(s) pending upload',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: filteredSamples.length,
+                          itemBuilder: (context, index) {
+                            return SampleCard(sample: filteredSamples[index]);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to add form
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const SampleFormScreen(),
+            ),
+          );
+        },
+        tooltip: 'Add Sample',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.science_outlined,
+            size: 64,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          Text(
+            'No samples yet.',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: AppSpacing.small),
+          Text(
+            'Tap + to record your first field sample.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      ),
+    );
   }
 }
