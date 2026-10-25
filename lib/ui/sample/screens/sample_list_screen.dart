@@ -17,19 +17,17 @@ class SampleListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // We watch the filtered list instead of the raw list
     final filteredSamplesAsyncValue = ref.watch(filteredSamplesProvider);
-    
+
     // We also need the raw list to know the pending count and if the database is truly empty
     final allSamplesAsyncValue = ref.watch(sampleListProvider);
-    
+
     final currentStatusFilter = ref.watch(statusFilterProvider);
 
     // Watch the upload queue just so the UI rebuilds if anything changes state during upload
     ref.watch(uploadQueueProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const CommonText(data: AppConstants.appTitle),
-      ),
+      appBar: AppBar(title: const CommonText(data: AppConstants.appTitle)),
       body: Column(
         children: [
           // Search and Filter Bar
@@ -55,10 +53,7 @@ class SampleListScreen extends ConsumerWidget {
                   value: currentStatusFilter,
                   hint: const Text('All Status'),
                   items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('All'),
-                    ),
+                    const DropdownMenuItem(value: null, child: Text('All')),
                     ...SampleStatus.values.map(
                       (status) => DropdownMenuItem(
                         value: status,
@@ -79,9 +74,7 @@ class SampleListScreen extends ConsumerWidget {
           Expanded(
             child: filteredSamplesAsyncValue.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                child: Text('Error: $error'),
-              ),
+              error: (error, stack) => Center(child: Text('Error: $error')),
               data: (filteredSamples) {
                 // If there are no samples at all in the database, show the empty state
                 final allSamples = allSamplesAsyncValue.value ?? [];
@@ -97,7 +90,11 @@ class SampleListScreen extends ConsumerWidget {
                 }
 
                 final pendingCount = allSamples
-                    .where((s) => s.status == SampleStatus.pending || s.status == SampleStatus.failed)
+                    .where(
+                      (s) =>
+                          s.status == SampleStatus.pending ||
+                          s.status == SampleStatus.failed,
+                    )
                     .length;
 
                 return RefreshIndicator(
@@ -107,7 +104,9 @@ class SampleListScreen extends ConsumerWidget {
                     children: [
                       if (pendingCount > 0)
                         Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.small),
+                          padding: const EdgeInsets.only(
+                            bottom: AppSpacing.small,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -121,11 +120,18 @@ class SampleListScreen extends ConsumerWidget {
                               const SizedBox(width: AppSpacing.medium),
                               ElevatedButton(
                                 onPressed: () {
-                                  ref.read(uploadQueueProvider.notifier).uploadAllPending();
+                                  ref
+                                      .read(uploadQueueProvider.notifier)
+                                      .uploadAllPending();
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(0, 36), // slightly smaller button
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  minimumSize: const Size(
+                                    0,
+                                    36,
+                                  ), // slightly smaller button
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
                                 ),
                                 child: const CommonText(data: 'Upload All'),
                               ),
@@ -151,11 +157,9 @@ class SampleListScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to add form
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const SampleFormScreen(),
-            ),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const SampleFormScreen()));
         },
         tooltip: 'Add Sample',
         child: const Icon(Icons.add),

@@ -20,19 +20,13 @@ class AppTheme {
       ),
       // Ensure tap targets meet the 48dp rule by default on buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: ElevatedButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: OutlinedButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
     );
   }
@@ -50,19 +44,13 @@ class AppTheme {
         filled: true,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: ElevatedButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          minimumSize: const Size(64, 48),
-        ),
+        style: OutlinedButton.styleFrom(minimumSize: const Size(64, 48)),
       ),
     );
   }

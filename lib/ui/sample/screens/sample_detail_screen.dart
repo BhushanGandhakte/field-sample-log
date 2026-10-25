@@ -43,7 +43,10 @@ class SampleDetailScreen extends ConsumerWidget {
               Navigator.of(ctx).pop(); // Close dialog
               Navigator.of(context).pop(); // Go back to list
             },
-            child: const CommonText(data: 'Delete', style: TextStyle(color: Colors.red)),
+            child: const CommonText(
+              data: 'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -55,7 +58,7 @@ class SampleDetailScreen extends ConsumerWidget {
     // We watch the list provider so that if this sample gets updated (e.g. from the edit screen),
     // the detail screen automatically refreshes with the new data.
     final samples = ref.watch(sampleListProvider).value ?? [];
-    
+
     // Find our current sample from the state to ensure we always display the latest data
     final currentSample = samples.firstWhere(
       (s) => s.id == sample.id,
@@ -158,7 +161,7 @@ class SampleDetailScreen extends ConsumerWidget {
                 child: CommonText(data: currentSample.notes),
               ),
             ],
-            
+
             const SizedBox(height: AppSpacing.xLarge),
 
             // Action Buttons Based on Status
@@ -173,7 +176,8 @@ class SampleDetailScreen extends ConsumerWidget {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => SampleFormScreen(sample: currentSample),
+                              builder: (_) =>
+                                  SampleFormScreen(sample: currentSample),
                             ),
                           );
                         },
@@ -182,7 +186,7 @@ class SampleDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                
+
                 if (currentSample.status == SampleStatus.failed)
                   Expanded(
                     child: Padding(
@@ -191,9 +195,11 @@ class SampleDetailScreen extends ConsumerWidget {
                         onPressed: () {
                           // Update status to pending for retry
                           final retrySample = currentSample.copyWith(
-                            status: SampleStatus.pending
+                            status: SampleStatus.pending,
                           );
-                          ref.read(sampleListProvider.notifier).updateSample(retrySample);
+                          ref
+                              .read(sampleListProvider.notifier)
+                              .updateSample(retrySample);
                         },
                         icon: const Icon(Icons.refresh),
                         label: const CommonText(data: 'Retry Upload'),
@@ -224,14 +230,10 @@ class _DetailRow extends StatelessWidget {
         children: [
           CommonText(
             data: label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).textTheme.bodySmall?.color,
-                ),
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: Theme.of(context).textTheme.bodySmall?.color),
           ),
-          CommonText(
-            data: value,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          CommonText(data: value, style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );

@@ -30,14 +30,14 @@ class SampleFormState {
 // A family provider so that we can initialize the state with an existing sample if editing
 final sampleFormProvider = NotifierProvider.autoDispose
     .family<SampleFormNotifier, SampleFormState, SampleModel?>(
-  (arg) => SampleFormNotifier(arg),
-);
+      (arg) => SampleFormNotifier(arg),
+    );
 
 class SampleFormNotifier extends Notifier<SampleFormState> {
   final SampleModel? arg;
 
   SampleFormNotifier(this.arg);
-  
+
   @override
   SampleFormState build() {
     return SampleFormState(

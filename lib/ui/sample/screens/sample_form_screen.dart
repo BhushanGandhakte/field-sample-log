@@ -81,13 +81,19 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
     if (newDateTime.isAfter(DateTime.now())) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: CommonText(data: 'Collection time cannot be in the future.')),
+          const SnackBar(
+            content: CommonText(
+              data: 'Collection time cannot be in the future.',
+            ),
+          ),
         );
       }
       return;
     }
 
-    ref.read(sampleFormProvider(widget.sample).notifier).updateCollectedAt(newDateTime);
+    ref
+        .read(sampleFormProvider(widget.sample).notifier)
+        .updateCollectedAt(newDateTime);
   }
 
   void _save(SampleStatus targetStatus) {
@@ -96,13 +102,15 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
     }
 
     // Call the notifier to handle the saving business logic
-    ref.read(sampleFormProvider(widget.sample).notifier).saveSample(
-      siteName: _siteController.text,
-      depthStr: _depthController.text,
-      phStr: _phController.text,
-      notes: _notesController.text,
-      targetStatus: targetStatus,
-    );
+    ref
+        .read(sampleFormProvider(widget.sample).notifier)
+        .saveSample(
+          siteName: _siteController.text,
+          depthStr: _depthController.text,
+          phStr: _phController.text,
+          notes: _notesController.text,
+          targetStatus: targetStatus,
+        );
 
     Navigator.of(context).pop();
   }
@@ -138,7 +146,7 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.sample != null;
-    
+
     // Watch the form state for UI updates
     final formState = ref.watch(sampleFormProvider(widget.sample));
     final formNotifier = ref.read(sampleFormProvider(widget.sample).notifier);
@@ -178,9 +186,7 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
                 // Sample Type
                 DropdownButtonFormField<SampleType>(
                   initialValue: formState.sampleType,
-                  decoration: const InputDecoration(
-                    labelText: 'Sample Type *',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Sample Type *'),
                   items: SampleType.values.map((type) {
                     return DropdownMenuItem(
                       value: type,
@@ -219,7 +225,9 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
                     labelText: 'Depth (metres)',
                     hintText: 'e.g. 10.5',
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   validator: formNotifier.validateDepth,
                 ),
                 const SizedBox(height: AppSpacing.medium),
@@ -232,7 +240,9 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
                       labelText: 'pH *',
                       hintText: '0 to 14',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     validator: formNotifier.validatePh,
                   ),
                   const SizedBox(height: AppSpacing.medium),

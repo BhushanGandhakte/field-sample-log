@@ -31,9 +31,10 @@ final searchQueryProvider = NotifierProvider<SearchQueryNotifier, String>(
 );
 
 // Exposes the selected status filter
-final statusFilterProvider = NotifierProvider<StatusFilterNotifier, SampleStatus?>(
-  StatusFilterNotifier.new,
-);
+final statusFilterProvider =
+    NotifierProvider<StatusFilterNotifier, SampleStatus?>(
+      StatusFilterNotifier.new,
+    );
 
 // Computed Provider
 
@@ -47,7 +48,8 @@ final filteredSamplesProvider = Provider<AsyncValue<List<SampleModel>>>((ref) {
   return samplesAsyncValue.whenData((samples) {
     return samples.where((sample) {
       final matchesSearch = sample.siteName.toLowerCase().contains(searchQuery);
-      final matchesFilter = statusFilter == null || sample.status == statusFilter;
+      final matchesFilter =
+          statusFilter == null || sample.status == statusFilter;
       return matchesSearch && matchesFilter;
     }).toList();
   });

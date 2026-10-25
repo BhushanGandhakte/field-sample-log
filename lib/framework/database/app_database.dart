@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 class AppDatabase {
   AppDatabase._();
   static final AppDatabase instance = AppDatabase._();
-  
+
   static const _databaseName = 'field_sample_log.db';
   static const _version = 1;
 
@@ -20,11 +20,7 @@ class AppDatabase {
     final directory = await getDatabasesPath();
     final dbPath = path.join(directory, _databaseName);
 
-    return await openDatabase(
-      dbPath,
-      version: _version,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(dbPath, version: _version, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {

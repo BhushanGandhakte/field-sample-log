@@ -8,9 +8,9 @@ class CommonText extends StatelessWidget {
   final TextOverflow? overflow;
 
   const CommonText({
-    super.key, 
-    required this.data, 
-    this.style, 
+    super.key,
+    required this.data,
+    this.style,
     this.textAlign,
     this.maxLines,
     this.overflow,

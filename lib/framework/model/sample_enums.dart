@@ -1,13 +1,3 @@
-enum SampleStatus {
-  draft,
-  pending,
-  uploading,
-  uploaded,
-  failed,
-}
+enum SampleStatus { draft, pending, uploading, uploaded, failed }
 
-enum SampleType {
-  water,
-  soil,
-  air,
-}
+enum SampleType { water, soil, air }

@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-// Since we cannot mock AppDatabase directly without major refactoring (it's a singleton), 
+// Since we cannot mock AppDatabase directly without major refactoring (it's a singleton),
 // we will utilize sqflite_ffi to run a temporary in-memory database for our tests.
 
 void main() {
@@ -26,7 +26,7 @@ void main() {
       // NOTE: Because our FakeUploadService has a mandatory 2-second artificial delay built into the class itself,
       // this test will take exactly ~2 seconds to run. In a production app, the FakeUploadService would be injected
       // via an interface so it could be completely mocked without the delay.
-      
+
       final container = makeProviderContainer();
       final uploadQueueNotifier = container.read(uploadQueueProvider.notifier);
 

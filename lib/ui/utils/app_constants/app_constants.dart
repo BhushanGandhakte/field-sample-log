@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppConstants {
   AppConstants._();
 
-  static void showLog(String str){
+  static void showLog(String str) {
     debugPrint(str);
   }
 

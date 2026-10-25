@@ -3,6 +3,7 @@ import 'package:field_sample_log/ui/sample/screens/sample_detail_screen.dart';
 import 'package:field_sample_log/ui/utils/theme/app_spacing.dart';
 import 'package:field_sample_log/ui/utils/widgets/common_text.dart';
 import 'package:flutter/material.dart';
+
 import 'sample_status_chip.dart';
 
 class SampleCard extends StatelessWidget {

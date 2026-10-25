@@ -18,7 +18,7 @@ class FieldSampleLogApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       // Uses the system theme by default
-      themeMode: ThemeMode.system, 
+      themeMode: ThemeMode.system,
       home: const SampleListScreen(),
     );
   }

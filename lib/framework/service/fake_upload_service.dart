@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:field_sample_log/framework/model/sample_model.dart';
 
 /// Thrown when the fake upload service simulates a network failure.
@@ -23,7 +24,7 @@ class FakeUploadService {
   final Random _random = Random();
 
   /// Uploads a sample and returns a receipt ID.
-  /// 
+  ///
   /// - Takes about 2 seconds.
   /// - Throws a network error every 3rd call.
   /// - Idempotent during the same session, calling it again with the same sample ID returns the same receipt.
@@ -51,7 +52,8 @@ class FakeUploadService {
     }
 
     // 4. Success! Generate a new receipt ID and save it in the session map.
-    final newReceipt = 'rcpt_${DateTime.now().millisecondsSinceEpoch}_${sample.id}';
+    final newReceipt =
+        'rcpt_${DateTime.now().millisecondsSinceEpoch}_${sample.id}';
     _sessionReceipts[sample.id!] = newReceipt;
 
     return newReceipt;

@@ -52,7 +52,7 @@ class UploadQueueNotifier extends Notifier<Set<int>> {
       await listNotifier.updateSample(successSample);
     } catch (e) {
       AppConstants.showLog('Upload failed for sample $sampleId: $e');
-      
+
       // 4. On failure, mark as failed
       final failedSample = uploadingSample.copyWith(
         status: SampleStatus.failed,
@@ -70,11 +70,15 @@ class UploadQueueNotifier extends Notifier<Set<int>> {
     if (!samplesAsync.hasValue) return;
 
     final allSamples = samplesAsync.value!;
-    
+
     // Find all samples that are either 'pending' or 'failed'
-    final pendingSamples = allSamples.where((s) => 
-      s.status == SampleStatus.pending || s.status == SampleStatus.failed
-    ).toList();
+    final pendingSamples = allSamples
+        .where(
+          (s) =>
+              s.status == SampleStatus.pending ||
+              s.status == SampleStatus.failed,
+        )
+        .toList();
 
     // Trigger all uploads. They will run concurrently and each handles its own DB/State updates.
     for (final sample in pendingSamples) {

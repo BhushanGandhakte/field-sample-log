@@ -5,7 +5,7 @@ class AppColors {
 
   // The primary seed color used to generate the ColorScheme.
   static const Color primarySeed = Colors.teal;
-  
+
   // Custom status colors
   static const Color statusDraft = Colors.grey;
   static const Color statusPending = Colors.orange;

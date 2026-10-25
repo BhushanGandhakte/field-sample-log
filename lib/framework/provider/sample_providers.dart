@@ -17,9 +17,10 @@ final sampleRepositoryProvider = Provider<SampleRepository>((ref) {
 // The main state provider that holds our list of samples.
 // We use a NotifierProvider to handle loading, saving, and deleting samples,
 // so the UI just needs to watch this provider and react to state changes.
-final sampleListProvider = NotifierProvider<SampleListNotifier, AsyncValue<List<SampleModel>>>(() {
-  return SampleListNotifier();
-});
+final sampleListProvider =
+    NotifierProvider<SampleListNotifier, AsyncValue<List<SampleModel>>>(() {
+      return SampleListNotifier();
+    });
 
 class SampleListNotifier extends Notifier<AsyncValue<List<SampleModel>>> {
   // We use the repository instance directly from the ref when the notifier is built.
@@ -40,17 +41,19 @@ class SampleListNotifier extends Notifier<AsyncValue<List<SampleModel>>> {
     state = const AsyncValue.loading();
     try {
       final samples = await _repository.getAllSamples();
-      
+
       // Look for any samples stuck in 'uploading' due to a previous app kill/crash.
-      final stuckUploads = samples.where((s) => s.status == SampleStatus.uploading).toList();
-      
+      final stuckUploads = samples
+          .where((s) => s.status == SampleStatus.uploading)
+          .toList();
+
       if (stuckUploads.isNotEmpty) {
         // Recover them back to pending so they can be tried again.
         for (final stuck in stuckUploads) {
           final recovered = stuck.copyWith(status: SampleStatus.pending);
           await _repository.updateSample(recovered);
         }
-        
+
         // Re-fetch the clean list to ensure our memory state perfectly matches the database
         final recoveredSamples = await _repository.getAllSamples();
         state = AsyncValue.data(recoveredSamples);
@@ -115,7 +118,9 @@ class SampleListNotifier extends Notifier<AsyncValue<List<SampleModel>>> {
       // Filter out the deleted item from our state list.
       if (state.hasValue) {
         final currentSamples = state.value!;
-        state = AsyncValue.data(currentSamples.where((s) => s.id != id).toList());
+        state = AsyncValue.data(
+          currentSamples.where((s) => s.id != id).toList(),
+        );
       }
     } catch (e) {
       AppConstants.showLog('Error deleting sample: $e');
