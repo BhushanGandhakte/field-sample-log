@@ -19,10 +19,10 @@ class SampleCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          // Navigate to details
+          // Navigate to details passing the selected sample
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => const SampleDetailScreen(),
+              builder: (_) => SampleDetailScreen(sample: sample),
             ),
           );
         },
