@@ -1,6 +1,7 @@
 import 'package:field_sample_log/framework/model/sample_enums.dart';
 import 'package:field_sample_log/framework/provider/sample_list_filter_provider.dart';
 import 'package:field_sample_log/framework/provider/sample_providers.dart';
+import 'package:field_sample_log/framework/provider/upload_providers.dart';
 import 'package:field_sample_log/ui/sample/screens/sample_form_screen.dart';
 import 'package:field_sample_log/ui/sample/widgets/sample_card.dart';
 import 'package:field_sample_log/ui/utils/app_constants/app_constants.dart';
@@ -21,6 +22,9 @@ class SampleListScreen extends ConsumerWidget {
     final allSamplesAsyncValue = ref.watch(sampleListProvider);
     
     final currentStatusFilter = ref.watch(statusFilterProvider);
+
+    // Watch the upload queue just so the UI rebuilds if anything changes state during upload
+    ref.watch(uploadQueueProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -93,7 +97,7 @@ class SampleListScreen extends ConsumerWidget {
                 }
 
                 final pendingCount = allSamples
-                    .where((s) => s.status == SampleStatus.pending)
+                    .where((s) => s.status == SampleStatus.pending || s.status == SampleStatus.failed)
                     .length;
 
                 return RefreshIndicator(
@@ -104,12 +108,28 @@ class SampleListScreen extends ConsumerWidget {
                       if (pendingCount > 0)
                         Padding(
                           padding: const EdgeInsets.only(bottom: AppSpacing.small),
-                          child: Text(
-                            '$pendingCount sample(s) pending upload',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$pendingCount sample(s) pending upload',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.medium),
+                              ElevatedButton(
+                                onPressed: () {
+                                  ref.read(uploadQueueProvider.notifier).uploadAllPending();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(0, 36), // slightly smaller button
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                ),
+                                child: const CommonText(data: 'Upload All'),
+                              ),
+                            ],
                           ),
                         ),
                       Expanded(
