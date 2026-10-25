@@ -29,42 +29,57 @@ class SampleListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const CommonText(data: AppConstants.appTitle)),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Search and Filter Bar
+          // Search and Filter Area
           Padding(
             padding: const EdgeInsets.all(AppSpacing.medium),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search site name...',
-                      prefixIcon: Icon(Icons.search),
-                      isDense: true,
-                    ),
-                    onChanged: (value) {
-                      // Update state via Riverpod
-                      ref.read(searchQueryProvider.notifier).updateQuery(value);
-                    },
+                // Full-width Search Bar
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Search site name...',
+                    prefixIcon: Icon(Icons.search),
+                    isDense: true,
                   ),
-                ),
-                const SizedBox(width: AppSpacing.small),
-                DropdownButton<SampleStatus?>(
-                  value: currentStatusFilter,
-                  hint: const Text('All Status'),
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('All')),
-                    ...SampleStatus.values.map(
-                      (status) => DropdownMenuItem(
-                        value: status,
-                        child: Text(status.name.toUpperCase()),
-                      ),
-                    ),
-                  ],
                   onChanged: (value) {
-                    // Update state via Riverpod
-                    ref.read(statusFilterProvider.notifier).updateStatus(value);
+                    ref.read(searchQueryProvider.notifier).updateQuery(value);
                   },
+                ),
+                const SizedBox(height: AppSpacing.medium),
+                
+                // Horizontally Scrollable Filter Chips
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ChoiceChip(
+                        label: const CommonText(data: 'All'),
+                        selected: currentStatusFilter == null,
+                        onSelected: (selected) {
+                          if (selected) {
+                            ref.read(statusFilterProvider.notifier).updateStatus(null);
+                          }
+                        },
+                      ),
+                      const SizedBox(width: AppSpacing.small),
+                      ...SampleStatus.values.map(
+                        (status) => Padding(
+                          padding: const EdgeInsets.only(right: AppSpacing.small),
+                          child: ChoiceChip(
+                            label: CommonText(data: status.name.toUpperCase()),
+                            selected: currentStatusFilter == status,
+                            onSelected: (selected) {
+                              // If they tap the active one, it clears the filter back to 'All'
+                              ref.read(statusFilterProvider.notifier).updateStatus(selected ? status : null);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

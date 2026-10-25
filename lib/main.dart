@@ -14,6 +14,7 @@ class FieldSampleLogApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: AppConstants.appTitle,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

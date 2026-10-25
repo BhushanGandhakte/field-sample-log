@@ -205,15 +205,20 @@ class _SampleFormScreenState extends ConsumerState<SampleFormScreen> {
                 const SizedBox(height: AppSpacing.medium),
 
                 // Collected At Date/Time
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const CommonText(data: 'Collected At *'),
-                  subtitle: CommonText(data: formNotifier.formatDateTime()),
-                  trailing: const CommonIcon(icon: Icons.calendar_today),
+                InkWell(
                   onTap: () => _selectDateTime(formState.collectedAt),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Theme.of(context).dividerColor),
-                    borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(4),
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Collected At *',
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CommonText(data: formNotifier.formatDateTime()),
+                        const CommonIcon(icon: Icons.calendar_today, size: 20),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.medium),
